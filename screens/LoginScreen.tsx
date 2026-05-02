@@ -9,16 +9,15 @@ import {
     Alert,
 } from "react-native";
 import Ionicons from "@react-native-vector-icons/ionicons";
+import { useNavigation } from "@react-navigation/native";
+
 
 import { useMutation } from "convex/react";
 import { api } from "../convex/_generated/api";
 import { Id } from "../convex/_generated/dataModel";
 
-interface LoginProps {
-    onLogin: (id: Id<"users">) => void
-}
-
-const LoginScreen = ({ onLogin } : LoginProps) => {
+const LoginScreen = () => {
+    const navigation = useNavigation<any>()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
@@ -35,16 +34,11 @@ const LoginScreen = ({ onLogin } : LoginProps) => {
                 password
             })
 
-            if (result.success && result.userId) {
-
-                onLogin(result.userId)
-
-                setEmail('')
-                setPassword('')
+            if (result.success === true) {
+                (navigation as any).navigate('Todo', { userId: result.userId })
             } else {
                 Alert.alert("Login Failed", result.message)
             }
-
         } catch (error) {
             Alert.alert("Error", "Unexpected error happen. Please try again!")
             console.log(error)

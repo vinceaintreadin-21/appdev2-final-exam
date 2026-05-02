@@ -13,19 +13,16 @@ export const login = mutation({
             .unique();
 
         if (!user) {
-            return { success: false, message: "User not found!" }
+            return { success: false as const, message: "User not found!" }
         }
 
         const passwordCorrect = bcrypt.compareSync(args.password, user.password)
 
         if (!passwordCorrect) {
-            return { success: false, message: "Invalid credentials!" }
+            return { success: false as const, message: "Invalid credentials!" }
         }
 
-        return {
-            success: true,
-            userId: user._id
-        }
+        return { success: true as const, userId: user._id }
     }
 })
 
@@ -40,16 +37,16 @@ export const register = mutation({
             .unique();
 
         if (user) {
-            return { success: false, message: "User already exists!" }
+            return { success: false as const, userId: undefined, message: "User already exists!" }
         }
 
         const hashedPassword = bcrypt.hashSync(args.password, 10);
 
-        const userId = ctx.db.insert("users", {
+        const userId = await ctx.db.insert("users", {
             username: args.username,
             password: hashedPassword
         });
 
-        return userId;
+        return { success: true as const, userId, message: undefined }
     }
 })
