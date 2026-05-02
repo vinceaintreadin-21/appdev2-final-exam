@@ -34,11 +34,16 @@ const LoginScreen = () => {
                 password
             })
 
-            if (result.success === true) {
+            if (result.success && result.userId) {
+
                 (navigation as any).navigate('Todo', { userId: result.userId })
+
+                setEmail('')
+                setPassword('')
             } else {
                 Alert.alert("Login Failed", result.message)
             }
+
         } catch (error) {
             Alert.alert("Error", "Unexpected error happen. Please try again!")
             console.log(error)
